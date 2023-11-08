@@ -1,0 +1,16 @@
+# MATLAB .gitignore
+
+# Ignore MATLAB auto-generated files and directories
+/results/
+/logs/
+/simulink
+/toolbox/
+
+# Ignore MATLAB .mex and compiled files
+*.mexa64
+*.mexmaci64
+*.mexw64
+
+# Ignore MATLAB backup files
+*~
+
