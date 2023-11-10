@@ -45,25 +45,17 @@ for i = 1:numChannels
     title(channelName);
     axesArray{i} = a;
 end
-sgtitle('Raw Voltage Data for All Channels');
 linkaxes([axesArray{:}], 'xy');
 
 %% Filter Voltage
 % HP filter
 fpass = 0.5;
-% hp_voltage = highpass(voltageData(:,channelNum),fpass,fs,"Steepness",.9);
+channelNum = 8;
+hp_voltage = highpass(voltageData(:,channelNum),fpass,fs,"Steepness",.9);
 
 % Notch Filter
 fstop = [55 65]; % Bounds for bandstop filter
-% filtered_voltage = bandstop(hp_voltage,fstop,fs);
-
-hp_voltage = zeros(size(eegData,1),numChannels);
-filtered_voltage = zeros(size(eegData,1),numChannels);
-
-for i = 1:8
-    hp_voltage(:,i) = highpass(voltageData(:,i),fpass,fs,"Steepness",.9);
-    filtered_voltage(:,i) = bandstop(hp_voltage(:,i),fstop,fs);
-end
+filtered_voltage = bandstop(hp_voltage,fstop,fs);
 
 %% Power Spectral Density Plot
 channelNum = 8;
@@ -81,4 +73,4 @@ plot(f,10*log10(pxx));
 % Filtered
 [pxx2,f2] = pwelch(filtered_voltage(:,channelNum),window,ceil(numel(window)*per_overlap),ceil(numel(window)*per_nfft),fs);
 figure;
-plot(f2,10*log10(pxx2));
+plot(f2,10*log10(pxx));
