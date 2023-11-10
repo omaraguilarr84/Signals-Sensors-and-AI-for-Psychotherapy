@@ -4,6 +4,7 @@ clear; clc; close all;
 % Add your personal file path
 file_path = '/Users/omaraguilarjr/Documents/MATLAB/Sensors and AI in Psychotherapy/Data/Testing Fall 2023/11-1 Sophia Test/BrainFlow-RAW_2023-11-01_15-08-45_1.csv';
 eegData = readmatrix(file_path);
+trialName = '11-1 Sophia';
 
 % Sample number within a second of recording
 sampleIndex = eegData(:,1);
@@ -27,12 +28,12 @@ fs = 250; % Sampling rate
 numSamples = 0:size(eegData,1)-1;
 time = numSamples/fs;
 
-% % Plot One Channel
-% figure;
-% plot(time,EXG_Channel1);
-% xlabel('Time (s)');
-% ylabel('Voltage (uV)');
-% title('Raw Voltage for Channel 8');
+% Plot One Channel
+figure;
+plot(time,EXG_Channel6);
+xlabel('Time (s)');
+ylabel('Voltage (uV)');
+title('Raw Voltage for Channel 7');
 
 % Plot All Channels
 axesArray = cell(numChannels,1);
@@ -45,7 +46,7 @@ for i = 1:numChannels
     title(channelName);
     axesArray{i} = a;
 end
-sgtitle('Raw Voltage Data for All Channels');
+sgtitle(['Raw Voltage Data for All Channels: ',trialName],'FontSize',20,'FontWeight','bold');
 linkaxes([axesArray{:}], 'xy');
 
 %% Filter Voltage
@@ -59,14 +60,36 @@ fstop = [55 65]; % Bounds for bandstop filter
 
 hp_voltage = zeros(size(eegData,1),numChannels);
 filtered_voltage = zeros(size(eegData,1),numChannels);
-
 for i = 1:8
     hp_voltage(:,i) = highpass(voltageData(:,i),fpass,fs,"Steepness",.9);
     filtered_voltage(:,i) = bandstop(hp_voltage(:,i),fstop,fs);
 end
 
+%% Plot Filtered Voltage
+% Plot one channel
+channelNum = 7;
+figure;
+plot(time,filtered_voltage(:,channelNum));
+xlabel('Time (s)')
+ylabel('Voltage (V)');
+title(['Filtered Voltage for Channel ',num2str(channelNum)]);
+
+% Plot all channels
+axesArray = cell(numChannels,1);
+for i = 1:numChannels
+    channelName = sprintf('EXG Channel %d',i-1);
+    a = nexttile;
+    plot(time,filtered_voltage(:,i));
+    xlabel('Time (s)');
+    ylabel('Voltage (uV)');
+    title(channelName);
+    axesArray{i} = a;
+end
+sgtitle(['Filtered Voltage Data for All Channels: ',trialName],'FontSize',20,'FontWeight','bold');
+linkaxes([axesArray{:}], 'xy');
+
 %% Power Spectral Density Plot
-channelNum = 8;
+channelNum = 7;
 
 % Fourier Transform specifications
 window = hann(fs);
@@ -77,8 +100,14 @@ per_nfft = 1.10;
 [pxx,f] = pwelch(voltageData(:,channelNum),window,ceil(numel(window)*per_overlap),ceil(numel(window)*per_nfft),fs);
 figure;
 plot(f,10*log10(pxx));
+xlabel('Frequency (Hz)');
+ylabel('Log Power (dB)');
+title(['Raw PSD for Channel ',num2str(channelNum)]);
 
 % Filtered
 [pxx2,f2] = pwelch(filtered_voltage(:,channelNum),window,ceil(numel(window)*per_overlap),ceil(numel(window)*per_nfft),fs);
 figure;
 plot(f2,10*log10(pxx2));
+xlabel('Frequency (Hz)');
+ylabel('Log Power (dB)');
+title(['Filtered PSD for Channel ',num2str(channelNum)]);
