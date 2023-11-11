@@ -122,13 +122,4 @@ window = hann(fs);
 per_overlap = 0.75;
 per_nfft = 1.10;
 
-% Short-Time Fourier Transform
-[S, F, T] = spectrogram(voltageData(:,channelNum),window,ceil(numel(window)*per_overlap),ceil(numel(window)*per_nfft),fs);
-spectrogram_dB = 10 * log10(abs(S));
-imagesc(T, F, normalize(spectrogram_dB,2,'center'));
-xlabel('Time (s)');
-ylabel('Frequency (Hz)');
-ylim([0 100]);
-yline([0 4 8 12 30 50 70],'-',{'Delta','Theta','Alpha','Beta','Low Gamma','N/A','HighGamma'});
-colorbar eastoutside;
-title(sprintf('Raw Spectrogram for Channel %0.0f', channelNum));
+[S, F, T] = 
