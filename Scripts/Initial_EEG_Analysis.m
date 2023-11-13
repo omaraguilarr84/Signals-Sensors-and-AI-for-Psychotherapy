@@ -2,9 +2,9 @@ clear; clc; close all;
 
 %% Load Data
 % Add your personal file path
-file_path = '/Users/omaraguilarjr/Documents/MATLAB/Sensors and AI in Psychotherapy/Data/Testing Fall 2023/11-1 Sophia Test/BrainFlow-RAW_2023-11-01_15-08-45_1.csv';
+file_path = '/Users/omaraguilarjr/Documents/MATLAB/Sensors and AI in Psychotherapy/Data/Testing Fall 2023/11-8/11-8 Dr. Gilmore Test/BrainFlow-RAW_2023-11-08_15-53-03_0.csv';
 eegData = readmatrix(file_path);
-trialName = '11-1 Sophia';
+trialName = '11-8 Dr. Gilmore';
 
 % Sample number within a second of recording
 sampleIndex = eegData(:,1);
@@ -28,19 +28,19 @@ fs = 250; % Sampling rate
 numSamples = 0:size(eegData,1)-1;
 time = numSamples/fs;
 
-% Plot One Channel
-figure;
-plot(time,EXG_Channel6);
-xlabel('Time (s)');
-ylabel('Voltage (uV)');
-title('Raw Voltage for Channel 7');
+% % Plot One Channel
+% figure;
+% plot(time,EXG_Channel6);
+% xlabel('Time (s)');
+% ylabel('Voltage (uV)');
+% title('Raw Voltage for Channel 7');
 
 % Plot All Channels
 axesArray = cell(numChannels,1);
 for i = 1:numChannels
     channelName = sprintf('EXG Channel %d',i-1);
     a = nexttile;
-    plot(time,eegData(:,i+1));
+    plot(time,voltageData(:,i));
     xlabel('Time (s)');
     ylabel('Voltage (uV)');
     title(channelName);
