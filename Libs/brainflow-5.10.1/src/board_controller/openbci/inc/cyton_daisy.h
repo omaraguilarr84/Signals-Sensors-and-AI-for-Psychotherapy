@@ -1,0 +1,24 @@
+#pragma once
+
+#include <math.h>
+#include <string>
+#include <vector>
+
+#include "openbci_gain_tracker.h"
+#include "openbci_serial_board.h"
+
+class CytonDaisy : public OpenBCISerialBoard
+{
+protected:
+    CytonDaisyGainTracker gain_tracker;
+
+    void read_thread ();
+
+public:
+    CytonDaisy (struct BrainFlowInputParams params)
+        : OpenBCISerialBoard (params, (int)BoardIds::CYTON_DAISY_BOARD)
+    {
+    }
+
+    int config_board (std::string config, std::string &response);
+};

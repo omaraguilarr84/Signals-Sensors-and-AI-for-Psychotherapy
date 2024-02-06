@@ -1,0 +1,49 @@
+name: Run Matlab Tests
+
+on: [push, pull_request]
+
+
+jobs:
+  RunMatlabLinux:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Setup Cmake
+        uses: jwlawson/actions-setup-cmake@v1.4
+        with:
+          cmake-version: '3.16.x'
+      - name: Compile BrainFlow
+        run: |
+          mkdir $GITHUB_WORKSPACE/build
+          cd $GITHUB_WORKSPACE/build
+          cmake -DWARNINGS_AS_ERRORS=ON -DBUILD_ONNX=ON -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/installed -DCMAKE_BUILD_TYPE=Release ..
+          make
+          make install
+      - name: Set up Matlab
+        uses: matlab-actions/setup-matlab@v1
+      - name: Run Signal Processing Test
+        uses: matlab-actions/run-command@v1
+        with:
+          command: addpath('matlab_package/brainflow'),addpath('matlab_package/brainflow/examples'),addpath('matlab_package/brainflow/inc'),addpath('matlab_package/brainflow/lib'),SignalFiltering
+      - name: Run Transforms Test
+        uses: matlab-actions/run-command@v1
+        with:
+          command: addpath('matlab_package/brainflow'),addpath('matlab_package/brainflow/examples'),addpath('matlab_package/brainflow/inc'),addpath('matlab_package/brainflow/lib'),Transforms
+      - name: Run EEG Mertrics Test
+        uses: matlab-actions/run-command@v1
+        with:
+          command: addpath('matlab_package/brainflow'),addpath('matlab_package/brainflow/examples'),addpath('matlab_package/brainflow/inc'),addpath('matlab_package/brainflow/lib'),EEGMetrics
+      - name: Run CSP Test
+        uses: matlab-actions/run-command@v1
+        with:
+          command: addpath('matlab_package/brainflow'),addpath('matlab_package/brainflow/examples'),addpath('matlab_package/brainflow/inc'),addpath('matlab_package/brainflow/lib'),CSP
+      - name: Run Spo2 Test
+        uses: matlab-actions/run-command@v1
+        with:
+          command: addpath('matlab_package/brainflow'),addpath('matlab_package/brainflow/examples'),addpath('matlab_package/brainflow/inc'),addpath('matlab_package/brainflow/lib'),Spo2
+      - name: Run ICA Test
+        uses: matlab-actions/run-command@v1
+        with:
+          command: addpath('matlab_package/brainflow'),addpath('matlab_package/brainflow/examples'),addpath('matlab_package/brainflow/inc'),addpath('matlab_package/brainflow/lib'),ICA

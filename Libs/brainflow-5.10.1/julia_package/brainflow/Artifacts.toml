@@ -1,0 +1,7 @@
+[brainflow]
+git-tree-sha1 = "112de0c1e1b3d2b2ad897da59e49165f74b0ba61"
+lazy = true
+
+    [[brainflow.download]]
+    sha256 = "45e386ebed7eb0215b87fd9a4ac6c7e8fbe830c31651dd05717532ae2bf3b982"
+    url = "https://github.com/brainflow-dev/brainflow/releases/download/5.10.0/compiled_libs.tar"
