@@ -1,6 +1,6 @@
-path = 'C:\Users\omarh\Documents\Clemson\Signals-Sensors-and-AI-for-Psychotherapy\Data\Shimmer Data-20240213T150603Z-001\Shimmer Data\2-1\2-1\2024-02-01_10.34.04_Thu2_1_2024_MultiSession\Thu2_1_2024_Session1_S103_011E_Calibrated_SD.csv';
+path = 'C:\Users\omarh\Documents\Clemson\Signals-Sensors-and-AI-for-Psychotherapy\Data\Shimmer Data\2-6\2024-02-06_10.45.14_2_6_2024_MultiSession\2_6_2024_Session1_S103_011E_Calibrated_SD.csv';
 ecgData = readmatrix(path);
-trialName = '2-1 Jade';
+trialName = '2-6 Omar';
 
 fs = 256; % not sure of this
 UnixTime = ecgData(:,1); % ms
@@ -53,3 +53,4 @@ imagesc(T, F, normalize(spectrogram_dB,2,'center'));
 xlabel('Time (s)');
 ylabel('Frequency (Hz)');
 colorbar;
+title([trialName, ' Filtered Voltage Spectrogram']);
