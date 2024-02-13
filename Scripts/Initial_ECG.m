@@ -1,9 +1,14 @@
-gitPath = '/Users/omaraguilarjr/Documents/MATLAB/Signals-Sensors-and-AI-for-Psychotherapy';
+%% Choose Computer
+list = {'Omar Mac', 'Omar PC'};
+a = listdlg('ListString',list);
+gitPath = comp(a);
+
+%% Load Data
 ecg_filePath = '/Data/Shimmer Data/2-1/2-1/2024-02-01_10.34.04_Thu2_1_2024_MultiSession/Thu2_1_2024_Session1_S103_011E_Calibrated_SD.csv';
 afr_filePath = '/Data/Shimmer Data/2-1/Thu2_1_2024_Session1_Aggregator_Fusion_Response_Calibrated_PC.csv';
 ecgData = readmatrix([gitPath, ecg_filePath]);
 afrData = readmatrix([gitPath, afr_filePath]);
-trialName = '2-6 Omar';
+trialName = '2-1 Jade';
 
 fs = 256; % not sure of this
 UnixTime = ecgData(:,1); % ms
@@ -82,5 +87,6 @@ plot(afr_time,resp);
 title([trialName, ' AFR']);
 ylabel('Response (%)');
 xlabel('Time (s)');
+ylim([99 101]);
 
 linkaxes([x1 x2 x3], 'x');
