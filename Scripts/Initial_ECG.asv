@@ -63,24 +63,10 @@ colorbar;
 title([trialName, ' Filtered Voltage Spectrogram']);
 
 %% Voltage with Spectrogram and AFR
-tiledlayout(3,1);
-
-x1 = nexttile;
+nexttile;
 plot(time,filtAmp);
 title([trialName, ' Filtered Voltage']);
 ylabel('Amplidtude (mV)');
 xlabel('Time (s)');
 
-x2 = nexttile;
-imagesc(T, F, normalize(spectrogram_dB,2,'center'));
-xlabel('Time (s)');
-ylabel('Frequency (Hz)');
-title([trialName, ' Filtered Voltage Spectrogram']);
-
-x3 = nexttile;
-plot(afr_time,resp);
-title([trialName, ' AFR']);
-ylabel('Response (%)');
-xlabel('Time (s)');
-
-linkaxes([x1 x2 x3], 'x');
+nexttile;
