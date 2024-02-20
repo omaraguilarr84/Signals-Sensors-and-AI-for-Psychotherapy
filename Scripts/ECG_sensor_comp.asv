@@ -1,0 +1,95 @@
+%% Choose Computer
+list = {'Omar Mac', 'Omar PC'};
+a = listdlg('ListString',list);
+gitPath = comp(a);
+
+%% Load Data
+trialName = '2-15 Gracie';
+fs = 256; % pretty positive of this
+
+s1_ecg_filePath = '/Data/Shimmer Data/2-15/2024-02-15_10.35.35_Thu10h35m33s_MultiSession/Thu10h35m33s_Session1_S103_011E_Calibrated_SD.csv';
+s1_afr_filePath = '/Data/Shimmer Data/2-15/2024-02-15_10.35.35_Thu10h35m33s_MultiSession/Thu10h35m33s_Session1_Aggregator_Fusion_Response_Calibrated_PC.csv';
+s1_ecgData = readmatrix([gitPath, s1_ecg_filePath]);
+s1_afrData = readmatrix([gitPath, s1_afr_filePath]);
+s1_UnixTime = s1_ecgData(:,1); % ms
+s1_time = (s1_UnixTime-s1_UnixTime(1))/1000; % s
+s1_rawAmp = s1_ecgData(:,2); % mV
+s1_afr_UnixTime = s1_afrData(:,1);
+s1_afr_time = (s1_afr_UnixTime-s1_afr_UnixTime(1))/1000;
+s1_resp = s1_afrData(:,4);
+
+s2_ecg_filePath = '/Data/Shimmer Data/2-15/2024-02-15_10.35.35_Thu10h35m33s_MultiSession/Thu10h35m33s_Session2_S114_0146_Calibrated_SD.csv';
+s2_afr_filePath = '/Data/Shimmer Data/2-15/2024-02-15_10.35.35_Thu10h35m33s_MultiSession/Thu10h35m33s_Session2_Aggregator_Fusion_Response_Calibrated_PC.csv';
+s2_ecgData = readmatrix([gitPath, s2_ecg_filePath]);
+s2_afrData = readmatrix([gitPath, s2_afr_filePath]);
+s2_UnixTime = s2_ecgData(:,1); % ms
+s2_time = (s2_UnixTime-s2_UnixTime(1))/1000; % s
+s2_rawAmp = s2_ecgData(:,2); % mV
+s2_afr_UnixTime = s2_afrData(:,1);
+s2_afr_time = (s2_afr_UnixTime-s2_afr_UnixTime(1))/1000;
+s2_resp = s2_afrData(:,4);
+
+%% Raw Voltage Comparison
+figure;
+plot(s1_time,s1_rawAmp);
+hold on;
+plot(s2_time,s2_rawAmp);
+hold off;
+legend('S103','S114');
+xlabel('Unix Time (ms)');
+ylabel('Amplitude (mV)');
+title([trialName, ' Raw Voltage Comparison']);
+
+%% Raw Voltage Comparison w/ AFR
+tiledlayout(2,2);
+
+x1 = nexttile;
+plot(s1_UnixTime,s1_rawAmp);
+xlabel('Unix Time (ms)');
+ylabel('Amplitude (mV)');
+title('S103 Raw Voltage');
+
+y1 = nexttile;
+plot(s2_UnixTime,s2_rawAmp);
+xlabel('Unix Time (ms)');
+ylabel('Amplitude (mV)');
+title('S114 Raw Voltage');
+
+x2 = nexttile;
+plot(s1_afr_UnixTime,s1_resp);
+xlabel('Unix Time (ms)');
+ylabel('Response (%)');
+title('S103 AFR');
+ylim([99 101]);
+
+y2 = nexttile;
+plot(s2_afr_UnixTime,s2_resp);
+xlabel('Unix Time (ms)');
+ylabel('Response (%)');
+title('S114 AFR');
+ylim([99 101]);
+
+linkaxes([x1 x2], 'x');
+linkaxes([y1 y2], 'x');
+
+%% Filter Voltage
+fpass = 0.5;
+s1_hp_voltage = highpass(s1_rawAmp,fpass,fs,"Steepness",.9);
+s2_hp_voltage = highpass(s2_rawAmp,fpass,fs,"Steepness",.9);
+
+% Notch Filter
+fstop = [55 65]; % Bounds for bandstop filter
+s1_filtAmp = bandstop(s1_hp_voltage,fstop,fs);
+s2_filtAmp = bandstop(s2_hp_voltage,fstop,fs);
+
+%% Filtered Voltage Comparison
+figure;
+plot(s1_time,s1_filtAmp);
+hold on;
+plot(s2_time,s2_filtAmp);
+hold off;
+legend('S103','S114');
+xlabel('Unix Time (ms)');
+ylabel('Amplitude (mV)');
+title([trialName, ' Filtered Voltage Comparison']);
+
